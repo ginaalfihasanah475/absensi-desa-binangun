@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 const MENU = {
-  administrator: [['/dashboard', '🏠', 'Beranda'], ['/riwayat', '📊', 'Riwayat'], ['/admin/pegawai', '👥', 'Pegawai'], ['/admin/jadwal', '🕐', 'Jadwal'], ['/admin/qr', '🔳', 'QR Absensi'], ['/admin/lokasi', '🗺️', 'Lokasi'], ['/admin/pengaturan', '🎨', 'Pengaturan']],
-  pegawai: [['/dashboard', '🏠', 'Beranda'], ['/absen', '📍', 'Absen'], ['/riwayat', '📊', 'Riwayat']],
-  kepala_desa: [['/dashboard', '🏠', 'Beranda'], ['/riwayat', '📊', 'Riwayat']],
+  administrator: [['/dashboard', '🏠', 'Beranda'], ['/riwayat', '📊', 'Riwayat'], ['/persetujuan', '✅', 'Persetujuan'], ['/admin/pegawai', '👥', 'Pegawai'], ['/admin/jadwal', '🕐', 'Jadwal'], ['/admin/qr', '🔳', 'QR Absensi'], ['/admin/lokasi', '🗺️', 'Lokasi'], ['/admin/pengaturan', '🎨', 'Pengaturan']],
+  pegawai: [['/dashboard', '🏠', 'Beranda'], ['/absen', '📍', 'Absen'], ['/pengajuan', '📝', 'Pengajuan'], ['/riwayat', '📊', 'Riwayat']],
+  kepala_desa: [['/dashboard', '🏠', 'Beranda'], ['/riwayat', '📊', 'Riwayat'], ['/persetujuan', '✅', 'Persetujuan']],
 };
 const RUPA = { administrator: 'Administrator', pegawai: 'Pegawai', kepala_desa: 'Kepala Desa' };
 export default function Shell({ user, nama, logo, keluar, children }) {

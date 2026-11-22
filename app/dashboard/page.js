@@ -21,7 +21,7 @@ export default async function Dashboard() {
     kartu = [
       ['Total pegawai', await n(db.from('pegawai').select('*', H).is('deleted_at', null))],
       ['Hadir hari ini', await n(db.from('absensi').select('*', H).eq('tanggal', today).in('status', ['hadir', 'terlambat']))],
-      ['Komplain menunggu', await n(db.from('komplain').select('*', H).eq('status', 'menunggu'))],
+      ['Pengajuan menunggu', (await n(db.from('komplain').select('*', H).eq('status', 'menunggu'))) + (await n(db.from('absensi_manual').select('*', H).eq('status', 'menunggu').is('deleted_at', null)))],
     ];
   }
   const menu = s.role === 'pegawai' ? [['/absen', '📍 Absen']] : s.role === 'administrator' ? [['/admin/pegawai', '👥 Pegawai'], ['/admin/jadwal', '🕐 Jadwal Kerja'], ['/admin/qr', '🔳 QR Absensi'], ['/admin/lokasi', '🗺️ Lokasi Absen'], ['/admin/pengaturan', '🎨 Pengaturan']] : [];
