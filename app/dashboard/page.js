@@ -24,7 +24,7 @@ export default async function Dashboard() {
       ['Komplain menunggu', await n(db.from('komplain').select('*', H).eq('status', 'menunggu'))],
     ];
   }
-  const menu = s.role === 'pegawai' ? [['/absen', '📍 Absen']] : s.role === 'administrator' ? [['/admin/qr', '🔳 QR Absensi'], ['/admin/lokasi', '🗺️ Lokasi Absen']] : [];
+  const menu = s.role === 'pegawai' ? [['/absen', '📍 Absen']] : s.role === 'administrator' ? [['/admin/qr', '🔳 QR Absensi'], ['/admin/lokasi', '🗺️ Lokasi Absen'], ['/admin/pengaturan', '🎨 Pengaturan']] : [];
   const [peran, ikon] = RUPA[s.role];
   return (
     <>
