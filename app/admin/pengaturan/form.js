@@ -5,7 +5,7 @@ export default function Form({ p, logo, action, ok, err }) {
   const [u, setU] = useState(p.warna_utama), [a, setA] = useState(p.warna_aksen);
   const [nama, setNama] = useState(p.nama_aplikasi), [tag, setTag] = useState(p.tagline), [img, setImg] = useState(logo);
   return (
-    <form action={action} className="card">
+    <form action={action} className="card pengform">
       <div className="prev" style={{ '--utama': u, '--aksen': a }}>
         {img ? <img src={img} alt="" className="logo" /> : <div className="logo mark">{(nama || 'A')[0]}</div>}
         <b>{nama || 'Nama aplikasi'}</b><small>{tag}</small>

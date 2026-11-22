@@ -28,14 +28,8 @@ export default async function Dashboard() {
   const [peran, ikon] = RUPA[s.role];
   return (
     <>
-      <header className="top">
-        {logo ? <img src={logo} alt="" className="logo" /> : <div className="logo mark">{p.nama_aplikasi[0]}</div>}
-        <b>{p.nama_aplikasi}</b><span className="chip">{ikon} {peran}</span>
-        <form action={keluar}><button>Keluar</button></form>
-      </header>
       <main className="wrap">
-        <h1>Halo, {s.nama}!</h1><p className="muted">Ringkasan hari ini, {today}</p>
-        <nav className="menu">{menu.map(([h, t]) => <Link key={h} href={h}>{t}</Link>)}</nav>
+        <div className="hello"><h1>Halo, {s.nama}! 👋</h1><p>Ringkasan hari ini · {today}</p></div>
         <div className="grid">{kartu.map(([k, v]) => <div className="stat" key={k}><span>{k}</span><strong>{v}</strong></div>)}</div>
       </main>
     </>
