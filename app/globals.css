@@ -28,3 +28,13 @@ button:hover{transform:translateY(-2px)}
 .stat span{color:#6b7280;font-size:.85rem}.stat strong{display:block;font-size:2rem;margin-top:6px;text-transform:capitalize}
 @keyframes up{from{opacity:0;transform:translateY(16px)}}
 @media(max-width:800px){.login{grid-template-columns:1fr}.hero{padding:40px 28px}}
+.narrow{max-width:520px;display:grid;gap:16px}.back{color:var(--utama);font-weight:600;text-decoration:none}
+.mid{text-align:center;justify-items:center}.pin{font-size:3rem;width:96px;height:96px;display:grid;place-items:center;border-radius:50%;background:color-mix(in srgb,var(--utama) 14%,#fff)}
+.pin.on{animation:pulse 1s infinite}@keyframes pulse{50%{transform:scale(1.15);box-shadow:0 0 0 14px color-mix(in srgb,var(--utama) 12%,transparent)}}
+.ok{background:#dcfce7;color:#166534;padding:12px 14px;border-radius:12px;font-weight:600}
+.menu{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}.menu a,.btn{background:var(--utama);color:#fff;padding:12px 20px;border-radius:14px;font-weight:700;text-decoration:none;transition:transform .15s}
+.menu a:nth-child(2){background:var(--aksen);color:#1f2937}.menu a:hover,.btn:hover{transform:translateY(-2px)}
+.qr{width:min(320px,100%);border-radius:16px;border:1px solid #e5e7eb}
+button.ghost{background:#fff;color:var(--utama);border:1.5px solid var(--utama)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9;text-align:left}
+.row button{padding:8px 14px}

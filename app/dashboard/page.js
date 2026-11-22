@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { db, getPengaturan, logoUrl } from '@/lib/db';
 import { getSession, clearSession } from '@/lib/session';
@@ -23,6 +24,7 @@ export default async function Dashboard() {
       ['Komplain menunggu', await n(db.from('komplain').select('*', H).eq('status', 'menunggu'))],
     ];
   }
+  const menu = s.role === 'pegawai' ? [['/absen', '📍 Absen']] : s.role === 'administrator' ? [['/admin/qr', '🔳 QR Absensi'], ['/admin/lokasi', '🗺️ Lokasi Absen']] : [];
   const [peran, ikon] = RUPA[s.role];
   return (
     <>
@@ -33,6 +35,7 @@ export default async function Dashboard() {
       </header>
       <main className="wrap">
         <h1>Halo, {s.nama}!</h1><p className="muted">Ringkasan hari ini, {today}</p>
+        <nav className="menu">{menu.map(([h, t]) => <Link key={h} href={h}>{t}</Link>)}</nav>
         <div className="grid">{kartu.map(([k, v]) => <div className="stat" key={k}><span>{k}</span><strong>{v}</strong></div>)}</div>
       </main>
     </>
