@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 const MENU = {
-  administrator: [['/dashboard', '🏠', 'Beranda'], ['/riwayat', '📊', 'Riwayat'], ['/persetujuan', '✅', 'Persetujuan'], ['/admin/pegawai', '👥', 'Pegawai'], ['/admin/jadwal', '🕐', 'Jadwal'], ['/admin/qr', '🔳', 'QR Absensi'], ['/admin/lokasi', '🗺️', 'Lokasi'], ['/admin/pengaturan', '🎨', 'Pengaturan']],
+  administrator: [['/dashboard', '🏠', 'Beranda'], ['/riwayat', '📊', 'Riwayat'], ['/persetujuan', '✅', 'Persetujuan'], ['/admin/pegawai', '👥', 'Pegawai'], ['/admin/jadwal', '🕐', 'Jadwal'], ['/admin/qr', '🔳', 'QR Absensi'], ['/admin/lokasi', '🗺️', 'Lokasi'], ['/admin/pengaturan', '🎨', 'Pengaturan'], ['/admin/audit', '🧾', 'Audit Log']],
   pegawai: [['/dashboard', '🏠', 'Beranda'], ['/absen', '📍', 'Absen'], ['/pengajuan', '📝', 'Pengajuan'], ['/riwayat', '📊', 'Riwayat']],
   kepala_desa: [['/dashboard', '🏠', 'Beranda'], ['/riwayat', '📊', 'Riwayat'], ['/persetujuan', '✅', 'Persetujuan']],
 };

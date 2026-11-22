@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { catat } from '@/lib/log';
+import { urlBukti } from '@/lib/simpan';
 export const dynamic = 'force-dynamic';
 const P = '/admin/pegawai';
 const galat = (m) => redirect(P + '?e=' + encodeURIComponent(m));
@@ -39,7 +40,8 @@ async function reset(fd) {
 }
 export default async function Halaman({ searchParams }) {
   await cek();
-  const { data: list } = await db.from('pegawai').select('id,nip,jabatan,no_hp,users(nama,username)').is('deleted_at', null).order('id');
+  const { data: list } = await db.from('pegawai').select('id,nip,jabatan,no_hp,foto,users(nama,username)').is('deleted_at', null).order('id');
+  const fotos = await Promise.all((list || []).map((p) => urlBukti(p.foto)));
   return (
     <main className="wrap narrow">
       <Link href="/dashboard" className="back">← Dashboard</Link>
@@ -47,11 +49,12 @@ export default async function Halaman({ searchParams }) {
       {searchParams?.ok && <div className="ok">Berhasil disimpan ✅</div>}
       {searchParams?.e && <div className="err">{searchParams.e}</div>}
       <div className="card">
-        {(list || []).map((p) => (
+        {(list || []).map((p, i) => (
           <div className="row" key={p.id}>
-            <div><b>{p.users?.nama}</b><br /><small className="muted">@{p.users?.username} · {p.jabatan}<br />NIP {p.nip}{p.no_hp ? ` · ${p.no_hp}` : ''}</small></div>
+            <div className="orang">{fotos[i] ? <img src={fotos[i]} alt="" className="fav" /> : <span className="fav">{p.users?.nama?.[0]}</span>}<div><b>{p.users?.nama}</b><br /><small className="muted">@{p.users?.username} · {p.jabatan}<br />NIP {p.nip}{p.no_hp ? ` · ${p.no_hp}` : ''}</small></div></div>
             <div className="acts">
               <form action={reset} className="mini"><input type="hidden" name="id" value={p.id} /><input name="password" type="password" placeholder="Password baru" /><button className="ghost">Reset</button></form>
+              <a href={`/admin/pegawai/${p.id}`} className="btn">Edit</a>
               <form action={hapus}><input type="hidden" name="id" value={p.id} /><button className="ghost">Hapus</button></form>
             </div>
           </div>

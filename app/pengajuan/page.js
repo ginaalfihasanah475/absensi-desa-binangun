@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { waktu } from '@/lib/waktu';
+import { unggah } from '@/lib/simpan';
 export const dynamic = 'force-dynamic';
 const P = '/pengajuan';
 const JENIS = { sakit: 'Sakit', izin: 'Izin', dinas_luar: 'Dinas luar' };
@@ -24,7 +25,9 @@ async function koreksi(fd) {
   if (!a || !ket || (!masuk && !pulang)) galat('Pilih absensi, isi alasan, dan minimal satu jam usulan.');
   const { data: dup } = await db.from('komplain').select('id').eq('id_absensi', a.id).eq('status', 'menunggu').maybeSingle();
   if (dup) galat('Absensi ini sudah punya pengajuan yang menunggu.');
-  await db.from('komplain').insert({ id_absensi: a.id, keterangan: ket, jam_masuk_usulan: masuk, jam_pulang_usulan: pulang, jam_masuk_lama: a.jam_masuk, jam_pulang_lama: a.jam_pulang, tgl_pengajuan: waktu().tanggal });
+  const u = await unggah(fd.get('bukti'), 'koreksi');
+  if (u.error) galat(u.error);
+  await db.from('komplain').insert({ bukti: u.path, id_absensi: a.id, keterangan: ket, jam_masuk_usulan: masuk, jam_pulang_usulan: pulang, jam_masuk_lama: a.jam_masuk, jam_pulang_lama: a.jam_pulang, tgl_pengajuan: waktu().tanggal });
   redirect(P + '?ok=1');
 }
 async function manual(fd) {
@@ -34,7 +37,9 @@ async function manual(fd) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(tgl) || tgl > waktu().tanggal || !JENIS[jenis] || !alasan) galat('Isi tanggal (tidak boleh di masa depan), jenis, dan alasan.');
   const { data: dup } = await db.from('absensi_manual').select('id').eq('id_pegawai', id).eq('tanggal', tgl).is('deleted_at', null).in('status', ['menunggu', 'disetujui']).maybeSingle();
   if (dup) galat('Sudah ada pengajuan manual di tanggal itu.');
-  await db.from('absensi_manual').insert({ id_pegawai: id, tanggal: tgl, jenis, alasan, lokasi: String(fd.get('lokasi') || '').trim().slice(0, 255) || null });
+  const u = await unggah(fd.get('bukti'), 'manual');
+  if (u.error) galat(u.error);
+  await db.from('absensi_manual').insert({ bukti: u.path, id_pegawai: id, tanggal: tgl, jenis, alasan, lokasi: String(fd.get('lokasi') || '').trim().slice(0, 255) || null });
   redirect(P + '?ok=1');
 }
 export default async function Halaman({ searchParams }) {
@@ -56,6 +61,7 @@ export default async function Halaman({ searchParams }) {
           <label>Absensi (30 hari terakhir)<select name="absensi" required>{(abs || []).map((a) => <option key={a.id} value={a.id}>{a.tanggal} · {a.jam_masuk?.slice(0, 5) || '--'} – {a.jam_pulang?.slice(0, 5) || '--'} · {a.status}</option>)}</select></label>
           <div className="duo"><label>Jam masuk yang benar<input type="time" name="masuk" /></label><label>Jam pulang yang benar<input type="time" name="pulang" /></label></div>
           <label>Alasan<input name="keterangan" required maxLength={500} placeholder="Contoh: sinyal GPS bermasalah" /></label>
+          <label>Bukti (opsional, foto/PDF maks 2 MB)<input type="file" name="bukti" accept="image/*,application/pdf" /></label>
           <button>Kirim koreksi</button>
         </form>
         <form action={manual} className="card">
@@ -63,6 +69,7 @@ export default async function Halaman({ searchParams }) {
           <div className="duo"><label>Tanggal<input type="date" name="tanggal" required /></label><label>Jenis<select name="jenis">{Object.entries(JENIS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></label></div>
           <label>Alasan<input name="alasan" required maxLength={500} /></label>
           <label>Lokasi (opsional)<input name="lokasi" maxLength={255} placeholder="Contoh: Kantor Kecamatan" /></label>
+          <label>Bukti (opsional, foto/PDF maks 2 MB)<input type="file" name="bukti" accept="image/*,application/pdf" /></label>
           <button>Kirim pengajuan</button>
         </form>
       </div>

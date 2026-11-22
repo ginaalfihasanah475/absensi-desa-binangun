@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { catat } from '@/lib/log';
+import { urlBukti } from '@/lib/simpan';
 export const dynamic = 'force-dynamic';
 const P = '/persetujuan';
 const JENIS = { sakit: 'Sakit', izin: 'Izin', dinas_luar: 'Dinas luar' };
@@ -45,9 +46,10 @@ const Tombol = ({ a, b, ta, tb }) => <div className="acts"><button name="aksi" v
 export default async function Halaman() {
   await cek();
   const [{ data: kom }, { data: man }] = await Promise.all([
-    db.from('komplain').select('id,keterangan,jam_masuk_lama,jam_pulang_lama,jam_masuk_usulan,jam_pulang_usulan,absensi(tanggal,pegawai(users(nama)))').eq('status', 'menunggu').order('id'),
+    db.from('komplain').select('id,bukti,keterangan,jam_masuk_lama,jam_pulang_lama,jam_masuk_usulan,jam_pulang_usulan,absensi(tanggal,pegawai(users(nama)))').eq('status', 'menunggu').order('id'),
     db.from('absensi_manual').select('*,pegawai(users(nama))').eq('status', 'menunggu').is('deleted_at', null).order('id'),
   ]);
+  await Promise.all([...(kom || []), ...(man || [])].map(async (x) => { x.url = await urlBukti(x.bukti); }));
   return (
     <main className="wrap" style={{ display: 'grid', gap: 20 }}>
       <div><h1>Persetujuan</h1><p className="muted">Periksa pengajuan koreksi jam dan absensi manual dari pegawai.</p></div>
@@ -56,7 +58,7 @@ export default async function Halaman() {
           {(kom || []).map((k) => (
             <form action={putusKoreksi} className="row" key={k.id}><input type="hidden" name="id" value={k.id} />
               <div><b>{k.absensi?.pegawai?.users?.nama}</b> · {k.absensi?.tanggal}<br />
-                <small className="muted">Masuk {t5(k.jam_masuk_lama)} → {t5(k.jam_masuk_usulan || k.jam_masuk_lama)} · Pulang {t5(k.jam_pulang_lama)} → {t5(k.jam_pulang_usulan || k.jam_pulang_lama)}<br />“{k.keterangan}”</small></div>
+                <small className="muted">Masuk {t5(k.jam_masuk_lama)} → {t5(k.jam_masuk_usulan || k.jam_masuk_lama)} · Pulang {t5(k.jam_pulang_lama)} → {t5(k.jam_pulang_usulan || k.jam_pulang_lama)}<br />“{k.keterangan}”{k.url && <><br /><a href={k.url} target="_blank" rel="noreferrer">📎 Lihat bukti</a></>}</small></div>
               <Tombol a="terima" b="tolak" ta="Terima" tb="Tolak" /></form>
           ))}
           {!kom?.length && <p className="muted">Tidak ada yang menunggu. 🎉</p>}
@@ -65,7 +67,7 @@ export default async function Halaman() {
           {(man || []).map((m) => (
             <form action={putusManual} className="row" key={m.id}><input type="hidden" name="id" value={m.id} />
               <div><b>{m.pegawai?.users?.nama}</b> · {m.tanggal}<br />
-                <small className="muted">{JENIS[m.jenis]}{m.lokasi ? ` di ${m.lokasi}` : ''}<br />“{m.alasan}”</small></div>
+                <small className="muted">{JENIS[m.jenis]}{m.lokasi ? ` di ${m.lokasi}` : ''}<br />“{m.alasan}”{m.url && <><br /><a href={m.url} target="_blank" rel="noreferrer">📎 Lihat bukti</a></>}</small></div>
               <Tombol a="setuju" b="tolak" ta="Setujui" tb="Tolak" /></form>
           ))}
           {!man?.length && <p className="muted">Tidak ada yang menunggu. 🎉</p>}
