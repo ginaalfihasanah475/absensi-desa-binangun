@@ -13,7 +13,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="id">
       <body className={font.className} style={{ '--utama': p.warna_utama, '--aksen': p.warna_aksen }}>
-        <Shell user={s ? { nama: s.nama, role: s.role } : null} nama={p.nama_aplikasi} logo={logoUrl(p)} keluar={keluar}>{children}</Shell>
+        <Shell user={s ? { nama: s.nama, role: s.role } : null} nama={p.nama_aplikasi} logo={logoUrl(p)} keluar={}>{children}</Shell>
       </body>
     </html>
   );
