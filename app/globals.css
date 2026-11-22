@@ -38,3 +38,4 @@ button:hover{transform:translateY(-2px)}
 button.ghost{background:#fff;color:var(--utama);border:1.5px solid var(--utama)}
 .row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9;text-align:left}
 .row button{padding:8px 14px}
+.kamera{width:100%;max-width:340px;border-radius:16px;overflow:hidden}
