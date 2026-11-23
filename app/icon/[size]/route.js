@@ -27,7 +27,7 @@ export async function GET(req, { params }) {
   const dalam = Math.round(size * (maskable ? 0.52 : 0.7));
   return new ImageResponse(
     (<div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: warna }}>
-      {logo ? <img src={logo} width={dalam} height={dalam} style={{ borderRadius: dalam * 0.22, objectFit: 'cover' }} />
+      {logo ? <div style={{ width: dalam, height: dalam, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff', borderRadius: dalam * 0.22 }}><img src={logo} width={Math.round(dalam * 0.82)} height={Math.round(dalam * 0.82)} style={{ objectFit: 'contain' }} /></div>
         : <div style={{ display: 'flex', color: '#fff', fontSize: dalam, fontWeight: 800 }}>{(p.nama_aplikasi || 'A')[0].toUpperCase()}</div>}
     </div>),
     { width: size, height: size });
