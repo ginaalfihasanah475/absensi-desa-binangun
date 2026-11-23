@@ -130,3 +130,4 @@ img.logo{object-fit:contain;background:transparent;border-radius:0}
 .hero img.logo{width:auto;height:120px;max-width:100%;filter:drop-shadow(0 8px 18px #0005)}
 .brand img.logo,.mtop img.logo{width:auto;max-width:44px;height:44px}
 .prev img.logo{width:auto;height:72px}
+.notifinfo{display:block;font-size:.75rem;line-height:1.35;color:#64748b;padding:0 4px}
