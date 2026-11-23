@@ -3,6 +3,7 @@ import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { catat } from '@/lib/log';
 import { urlBukti } from '@/lib/simpan';
+import { keUser } from '@/lib/push';
 export const dynamic = 'force-dynamic';
 const P = '/persetujuan';
 const JENIS = { sakit: 'Sakit', izin: 'Izin', dinas_luar: 'Dinas luar' };
@@ -13,7 +14,7 @@ const jadwalAktif = () => db.from('jadwal_kerja').select('*').eq('status', 'akti
 async function putusKoreksi(fd) {
   'use server';
   const s = await cek(), terima = fd.get('aksi') === 'terima', now = new Date().toISOString();
-  const { data: k } = await db.from('komplain').select('*,absensi(jam_masuk,jam_pulang,status)').eq('id', fd.get('id')).eq('status', 'menunggu').maybeSingle();
+  const { data: k } = await db.from('komplain').select('*,absensi(jam_masuk,jam_pulang,status,pegawai(id_users))').eq('id', fd.get('id')).eq('status', 'menunggu').maybeSingle();
   if (!k) redirect(P);
   if (terima) {
     const { data: j } = await jadwalAktif();
@@ -23,12 +24,13 @@ async function putusKoreksi(fd) {
   }
   await db.from('komplain').update({ status: terima ? 'diterima' : 'ditolak', updated_at: now }).eq('id', k.id);
   await catat(s.id, terima ? 'setuju' : 'tolak', 'komplain', `Koreksi jam id ${k.id} ${terima ? 'diterima' : 'ditolak'}`);
+  await keUser([k.absensi.pegawai.id_users], { title: terima ? 'Koreksi jam diterima ✅' : 'Koreksi jam ditolak', body: 'Pengajuan koreksi jam absenmu sudah diperiksa.', url: '/pengajuan' });
   redirect(P);
 }
 async function putusManual(fd) {
   'use server';
   const s = await cek(), setuju = fd.get('aksi') === 'setuju', now = new Date().toISOString();
-  const { data: m } = await db.from('absensi_manual').select('*').eq('id', fd.get('id')).eq('status', 'menunggu').maybeSingle();
+  const { data: m } = await db.from('absensi_manual').select('*,pegawai(id_users)').eq('id', fd.get('id')).eq('status', 'menunggu').maybeSingle();
   if (!m) redirect(P);
   if (setuju && m.jenis === 'dinas_luar') {
     const [{ data: j }, { data: qr }, { data: ada }] = await Promise.all([
@@ -40,6 +42,7 @@ async function putusManual(fd) {
   }
   await db.from('absensi_manual').update({ status: setuju ? 'disetujui' : 'ditolak', updated_at: now }).eq('id', m.id);
   await catat(s.id, setuju ? 'setuju' : 'tolak', 'manual', `Absensi manual id ${m.id} ${setuju ? 'disetujui' : 'ditolak'}`);
+  await keUser([m.pegawai.id_users], { title: setuju ? 'Absensi manual disetujui ✅' : 'Absensi manual ditolak', body: 'Pengajuan absensi manualmu sudah diperiksa.', url: '/pengajuan' });
   redirect(P);
 }
 const Tombol = ({ a, b, ta, tb }) => <div className="acts"><button name="aksi" value={a}>{ta}</button><button name="aksi" value={b} className="ghost">{tb}</button></div>;

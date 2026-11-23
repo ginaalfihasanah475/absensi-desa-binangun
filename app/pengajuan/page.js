@@ -3,6 +3,7 @@ import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { waktu } from '@/lib/waktu';
 import { unggah } from '@/lib/simpan';
+import { kePeran } from '@/lib/push';
 export const dynamic = 'force-dynamic';
 const P = '/pengajuan';
 const JENIS = { sakit: 'Sakit', izin: 'Izin', dinas_luar: 'Dinas luar' };
@@ -28,6 +29,7 @@ async function koreksi(fd) {
   const u = await unggah(fd.get('bukti'), 'koreksi');
   if (u.error) galat(u.error);
   await db.from('komplain').insert({ bukti: u.path, id_absensi: a.id, keterangan: ket, jam_masuk_usulan: masuk, jam_pulang_usulan: pulang, jam_masuk_lama: a.jam_masuk, jam_pulang_lama: a.jam_pulang, tgl_pengajuan: waktu().tanggal });
+  await kePeran(['administrator', 'kepala_desa'], { title: 'Pengajuan baru', body: 'Ada koreksi jam menunggu persetujuan.', url: '/persetujuan' });
   redirect(P + '?ok=1');
 }
 async function manual(fd) {
@@ -40,6 +42,7 @@ async function manual(fd) {
   const u = await unggah(fd.get('bukti'), 'manual');
   if (u.error) galat(u.error);
   await db.from('absensi_manual').insert({ bukti: u.path, id_pegawai: id, tanggal: tgl, jenis, alasan, lokasi: String(fd.get('lokasi') || '').trim().slice(0, 255) || null });
+  await kePeran(['administrator', 'kepala_desa'], { title: 'Pengajuan baru', body: 'Ada absensi manual menunggu persetujuan.', url: '/persetujuan' });
   redirect(P + '?ok=1');
 }
 export default async function Halaman({ searchParams }) {

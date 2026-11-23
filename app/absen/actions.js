@@ -22,6 +22,8 @@ export async function absen(token, lat, lng) {
   if (!j) return gagal('Jadwal kerja aktif belum ada.');
   const w = waktu();
   if (!j.hari.split(',').includes(w.hari)) return gagal(`Hari ${w.hari} bukan hari kerja.`);
+  const { data: libur } = await db.from('hari_libur').select('keterangan').eq('tanggal', w.tanggal).maybeSingle();
+  if (libur) return gagal(`Hari ini libur: ${libur.keterangan}.`);
   const { data: a } = await db.from('absensi').select('*').eq('id_pegawai', pg.id).eq('tanggal', w.tanggal).is('deleted_at', null).maybeSingle();
   if (!a) {
     const status = mnt(w.jam) > mnt(j.jam_masuk) + j.toleransi ? 'terlambat' : 'hadir';

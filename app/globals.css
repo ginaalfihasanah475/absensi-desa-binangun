@@ -125,3 +125,4 @@ select,textarea{width:100%;padding:12px 14px;border:1.5px solid #e5e7eb;border-r
 .fav{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--aksen);display:grid;place-items:center;font-weight:800;flex:none;color:#1f2937}
 .fotobesar{width:104px;height:104px;border-radius:24px;object-fit:cover;flex:none;font-size:2rem}
 .acts .btn{padding:8px 14px;font-size:.9rem}
+.notif{width:100%;padding:10px 12px;font-size:.85rem}
