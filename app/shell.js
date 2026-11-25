@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import Notif from './notif';
 const MENU = {
   administrator: [['/dashboard', '🏠', 'Beranda'], ['/riwayat', '📊', 'Riwayat'], ['/persetujuan', '✅', 'Persetujuan'], ['/admin/pegawai', '👥', 'Pegawai'], ['/admin/jadwal', '🕐', 'Jadwal'], ['/admin/libur', '📅', 'Hari Libur'], ['/admin/qr', '🔳', 'QR Absensi'], ['/admin/lokasi', '🗺️', 'Lokasi'], ['/admin/pengaturan', '🎨', 'Pengaturan'], ['/admin/audit', '🧾', 'Audit Log']],
   pegawai: [['/dashboard', '🏠', 'Beranda'], ['/absen', '📍', 'Absen'], ['/pengajuan', '📝', 'Pengajuan'], ['/riwayat', '📊', 'Riwayat']],
@@ -26,7 +25,6 @@ export default function Shell({ user, nama, logo, keluar, children }) {
             <Link key={h} href={h} onClick={tutup} className={path === h || (h !== '/dashboard' && path.startsWith(h)) ? 'on' : ''}><i>{i}</i>{t}</Link>
           ))}
         </nav>
-        <Notif />
         <div className="me">
           <div className="av">{user.nama[0]}</div>
           <div><b>{user.nama}</b><small>{RUPA[user.role]}</small></div>
